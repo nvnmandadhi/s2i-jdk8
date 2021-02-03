@@ -1,0 +1,37 @@
+#!/bin/bash -e
+#
+# S2I assemble script for the 's2i-jdk8' image.
+# The 'assemble' script builds your application source so that it is ready to run.
+#
+# For more information refer to the documentation:
+#	https://github.com/openshift/source-to-image/blob/master/docs/builder_image.md
+#
+
+# If the 's2i-jdk8' assemble script is executed with the '-h' flag, print the usage.
+if [[ "$1" == "-h" ]]; then
+	exec /opt/app-root/s2i/usage
+fi
+
+echo "---> Copying application source code to /opt/app-root/src"
+cp -fR /tmp/src/. /opt/app-root/src/
+rm -fr /tmp/src
+
+cd /opt/app-root/src
+
+if [[ ! -x "./mvnw" ]]; then
+  echo "---> Making /opt/app-root/src/mvnw executable"
+  chmod +x ./mvnw
+fi
+
+echo "---> Building application from source..."
+./mvnw clean package
+
+echo "---> Moving jar application to /app.jar"
+mv target/*.jar /opt/app-root/app.jar
+
+echo "---> Clearing away all source artifacts..."
+rm -Rf /opt/app-root/src/*
+
+echo "---> Clearing away all maven artifacts..."
+rm -Rf ${HOME}/.mvn
+rm -fR .mvn
