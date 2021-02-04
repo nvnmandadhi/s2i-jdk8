@@ -1,0 +1,33 @@
+on: push
+name: Build and Deploy to Habor registry
+
+env:
+  PROJECT_ID: library
+  DEPLOYMENT_NAME: s2i-jdk8
+  IMAGE: s2i-jdk8
+  REPOSITORY: harbor.apps.ocp.nmandadhi.com
+
+jobs:
+  setup-build-publish-deploy:
+    name: Setup, Build and Publish
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Set env
+        run: |
+          echo "ACTIONS_ALLOW_UNSECURE_COMMANDS=true" >> $GITHUB_ENV
+
+      - name: Configure docker
+        run: |-
+          docker login $REPOSITORY -u ${{ secrets.REG_USERNAME }} -p -u ${{ secrets.REG_PASSWORD }}
+
+      - name: Configure docker
+        run: |-
+          gcloud --quiet auth configure-docker
+
+      - name: Tag Image
+        run: |-
+          docker tag $IMAGE "$REPOSITORY/$PROJECT_ID/$IMAGE:$GITHUB_SHA"
+      - name: Publish
+        run: |-
+          docker push "$REPOSITORY/$PROJECT_ID/$IMAGE:$GITHUB_SHA"
