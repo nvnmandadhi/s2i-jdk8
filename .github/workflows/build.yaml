@@ -4,7 +4,7 @@ name: Build and Deploy to Habor registry
 jobs:
   setup-build-publish-deploy:
     name: Setup, Build and Publish
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
 
     steps:
       - name: Setup gcloud
