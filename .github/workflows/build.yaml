@@ -10,10 +10,6 @@ jobs:
       - name: Setup gcloud
         uses: actions/checkout@v2
 
-      - name: Set env
-        run: |
-          echo "ACTIONS_ALLOW_UNSECURE_COMMANDS=true" >> $GITHUB_ENV
-
       - name: Configure docker
         uses: docker/login-action@v1
         with:
