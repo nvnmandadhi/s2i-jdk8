@@ -21,6 +21,10 @@ jobs:
         run: |-
           docker login -u ${{ secrets.REG_USERNAME }} -p ${{ secrets.REG_PASSWORD }} $REPOSITORY
 
+      - name: Build Image
+        run: |-
+          docker build -t $IMAGE .
+
       - name: Tag Image
         run: |-
           docker tag $IMAGE "$REPOSITORY/$PROJECT_ID/$IMAGE:$GITHUB_SHA"
