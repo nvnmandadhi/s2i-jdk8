@@ -21,10 +21,6 @@ jobs:
         run: |-
           docker login $REPOSITORY -u ${{ secrets.REG_USERNAME }} -p -u ${{ secrets.REG_PASSWORD }}
 
-      - name: Configure docker
-        run: |-
-          gcloud --quiet auth configure-docker
-
       - name: Tag Image
         run: |-
           docker tag $IMAGE "$REPOSITORY/$PROJECT_ID/$IMAGE:$GITHUB_SHA"
