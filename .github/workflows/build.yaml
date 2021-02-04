@@ -19,11 +19,12 @@ jobs:
 
       - name: Configure docker
         run: |-
-          docker login $REPOSITORY -u ${{ secrets.REG_USERNAME }} -p -u ${{ secrets.REG_PASSWORD }}
+          docker login -u ${{ secrets.REG_USERNAME }} -p ${{ secrets.REG_PASSWORD }} $REPOSITORY
 
       - name: Tag Image
         run: |-
           docker tag $IMAGE "$REPOSITORY/$PROJECT_ID/$IMAGE:$GITHUB_SHA"
+          
       - name: Publish
         run: |-
           docker push "$REPOSITORY/$PROJECT_ID/$IMAGE:$GITHUB_SHA"
