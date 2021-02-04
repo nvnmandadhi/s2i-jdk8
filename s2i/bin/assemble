@@ -12,6 +12,14 @@ if [[ "$1" == "-h" ]]; then
 	exec /opt/app-root/s2i/usage
 fi
 
+RESTORED_ARTIFACTS=/tmp/artifacts
+
+if [ "$(ls -A $RESTORED_ARTIFACTS 2>/dev/null)" ]; then
+  echo -n " Restoring saved artifacts from prior build ..."
+  ls -latr $RESTORED_ARTIFACTS
+  mv $RESTORED_ARTIFACTS/. /opt/app-root/src/
+fi
+
 echo "---> Copying application source code to /opt/app-root/src"
 cp -fR /tmp/src/. /opt/app-root/src/
 rm -fr /tmp/src
@@ -24,14 +32,7 @@ if [[ ! -x "./mvnw" ]]; then
 fi
 
 echo "---> Building application from source..."
-./mvnw clean package
+./mvnw clean package -Dmaven.repo.local=m2
 
 echo "---> Moving jar application to /app.jar"
 mv target/*.jar /opt/app-root/app.jar
-
-echo "---> Clearing away all source artifacts..."
-rm -Rf /opt/app-root/src/*
-
-echo "---> Clearing away all maven artifacts..."
-rm -Rf ${HOME}/.mvn
-rm -fR .mvn
