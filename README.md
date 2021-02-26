@@ -12,14 +12,6 @@ The builder image can also be created by using the *make* command since a *Makef
 
 Once the image has finished building, the command *s2i usage s2i-jdk8* will print out the help info that was defined in the *usage* script.
 
-#### Testing the builder image
-The builder image can be tested using the following commands:
-```
-docker build -t s2i-jdk8-candidate .
-IMAGE_NAME=s2i-jdk8-candidate test/run
-```
-The builder image can also be tested by using the *make test* command since a *Makefile* is included.
-
 #### Creating the application image
 The application image combines the builder image with your applications source code, which is served using whatever application is installed via the *Dockerfile*, compiled using the *assemble* script, and run using the *run* script.
 The following command will create the application image:
@@ -35,12 +27,3 @@ Running the application image is as simple as invoking the docker run command:
 docker run -d -p 8080:8080 s2i-jdk8-app
 ```
 The application, which consists of a simple static web page, should now be accessible at  [http://localhost:8080](http://localhost:8080).
-
-#### Using the saved artifacts script
-Rebuilding the application using the saved artifacts can be accomplished using the following command:
-```
-s2i build --incremental=true test/test-app s2i-jdk8 s2i-jdk8-app
----> Restoring build artifacts...
----> Building and installing application from source...
-```
-This will run the *save-artifacts* script which includes the custom code to backup the currently running application source, rebuild the application image, and then re-deploy the previously saved source using the *assemble* script.
